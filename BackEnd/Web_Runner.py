@@ -13,6 +13,7 @@ import threading
 import os
 import hashlib
 import time
+import json
 
 os.chdir('/'.join(__file__.split('/')[:-1]))
 
@@ -40,6 +41,54 @@ def edit_file(path, dl):
         f.write(dl)
 
 ###############################################################
+
+
+
+import hashlib
+import time
+
+def make_hash(di):
+    return hashlib.sha256(di.encode()).hexdigest()
+
+class Random_Module:
+
+    def __init__(self,seed):
+        self.seed = seed
+
+    def rnd(self,max):
+        output = int(make_hash(self.seed)[:8], 16) % max
+        self.seed = make_hash(self.seed + str(output) + str(time.time()))
+        return output
+
+RM = Random_Module('Seed_2525' + str(time.time()))
+
+
+
+def shuffle_puzzle(w,h):
+    board = [[[i,e] for e in range(h)] for i in range(w)]
+    for i in range(100):
+        x = RM.rnd(w)
+        y = RM.rnd(h)
+        
+        mv_x =  1 - 1 * RM.rnd(2)
+        mv_y =  1 - 1 * RM.rnd(2)
+
+        if x + mv_x < 0 or x + mv_x >= w:
+            mv_x = -mv_x
+        if y + mv_y < 0 or y + mv_y >= h:
+            mv_y = -mv_y
+        
+        status = board[x][y]
+        board[x][y] = board[x + mv_x][y + mv_y]
+        board[x + mv_x][y + mv_y] = status
+    return board
+
+
+
+
+###############################################################
+
+
 
 
 
@@ -104,31 +153,25 @@ class Read_Data:
     def get_img_list(self, path_split, user_cookie, bf_cookie_data):
         content_type = 'application/json'
 
+        board = shuffle_puzzle(self.width,self.height)
+
+        img_list = []
+        for i in range(4):
+            for e in range(4):
+                img_list.append("img_"+str(i)+str(e)+".png")
+        img_list_str = json.dumps(img_list)
+
+        pos_dic = {}
+        for i in range(4):
+            pos_dic[i] = {}
+            for e in range(4):
+                pos_dic[i][e] = "img_"+str(board[i][e][0])+str(board[i][e][1])+".png"
+        pos_dic_str = json.dumps(pos_dic)
+
+
         html_data = '''{
-    "img_list":[
-        "画像名",
-        "画像名",
-        "画像名",
-        "画像名",
-        "画像名"],
-    "pos":{
-        "X座標":{
-            "Y座標":"画像名",
-            "Y座標":"画像名",
-            "Y座標":"画像名",
-            "Y座標":"画像名"
-        },"X座標":{
-            "Y座標":"画像名",
-            "Y座標":"画像名",
-            "Y座標":"画像名",
-            "Y座標":"画像名"
-        },"X座標":{
-            "Y座標":"画像名",
-            "Y座標":"画像名",
-            "Y座標":"画像名",
-            "Y座標":"画像名"
-        }
-    }
+    "img_list":'''+img_list_str+''',
+    "pos":'''+pos_dic_str+'''
 }
 '''
         add_cookie = False

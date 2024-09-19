@@ -32,7 +32,13 @@ def shuffle_puzzle(w,h):
         if y + mv_y < 0 or y + mv_y >= h:
             mv_y = -mv_y
         
-        
+        status = board[x][y]
+        board[x][y] = board[x + mv_x][y + mv_y]
+        board[x + mv_x][y + mv_y] = status
+    return board
+
+
+
 
 
 
