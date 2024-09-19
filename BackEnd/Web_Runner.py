@@ -46,6 +46,8 @@ def edit_file(path, dl):
 class Read_Data:
     def __init__(self):
         self.data_dic = {}
+        self.width = 4
+        self.height = 4
 
     def get_aasddds(self, path_split, user_cookie, bf_cookie_data):
         content_type = 'text/html'
@@ -88,24 +90,66 @@ class Read_Data:
         return html_data, content_type, add_cookie, cookie_data, DL_mode
 
     def get_make_room(self, path_split, user_cookie, bf_cookie_data):
-        content_type = 'text/html'
+        content_type = 'application/json'
 
-        html_data = self.data_dic.get('maintenance.html')
-        if html_data == None:
-            html_data = read_file('maintenance.html')
-
+        html_data = '''{
+    "result":"success"
+}
+'''
         add_cookie = False
         cookie_data = {}
         DL_mode = False
         return html_data, content_type, add_cookie, cookie_data, DL_mode
     
+    def get_img_list(self, path_split, user_cookie, bf_cookie_data):
+        content_type = 'application/json'
+
+        html_data = '''{
+    "img_list":[
+        "画像名",
+        "画像名",
+        "画像名",
+        "画像名",
+        "画像名"],
+    "pos":{
+        "X座標":{
+            "Y座標":"画像名",
+            "Y座標":"画像名",
+            "Y座標":"画像名",
+            "Y座標":"画像名"
+        },"X座標":{
+            "Y座標":"画像名",
+            "Y座標":"画像名",
+            "Y座標":"画像名",
+            "Y座標":"画像名"
+        },"X座標":{
+            "Y座標":"画像名",
+            "Y座標":"画像名",
+            "Y座標":"画像名",
+            "Y座標":"画像名"
+        }
+    }
+}
+'''
+        add_cookie = False
+        cookie_data = {}
+        DL_mode = False
+        return html_data, content_type, add_cookie, cookie_data, DL_mode
+
+
+
+
+
 RD = Read_Data()
 
 get_dic['/make_room'] = RD.get_make_room
+get_dic['/img_list'] = RD.get_img_list
+
 get_dic['/'] = RD.get_intro_project_data
 get_dic['/maintenance'] = RD.get_maintenance_data
 get_dic['/css'] = RD.get_css_data
 get_dic['/js'] = RD.get_js_data
+
 
 listen_num = 10
 
