@@ -98,6 +98,8 @@ class Read_Data:
         self.width = 4
         self.height = 4
 
+        self.ranking = []
+
     def get_aasddds(self, path_split, user_cookie, bf_cookie_data):
         content_type = 'text/html'
         if len(path_split) == 2:
@@ -143,8 +145,7 @@ class Read_Data:
 
         html_data = '''{
     "result":"success"
-}
-'''
+}'''
         add_cookie = False
         cookie_data = {}
         DL_mode = False
@@ -155,11 +156,11 @@ class Read_Data:
 
         board = shuffle_puzzle(self.width,self.height)
 
-        img_list = []
+        '''img_list = []
         for i in range(4):
             for e in range(4):
                 img_list.append("img_"+str(i)+str(e)+".png")
-        img_list_str = json.dumps(img_list)
+        img_list_str = json.dumps(img_list)'''
 
         pos_dic = {}
         for i in range(4):
@@ -170,7 +171,6 @@ class Read_Data:
 
 
         html_data = '''{
-    "img_list":'''+img_list_str+''',
     "pos":'''+pos_dic_str+'''
 }
 '''
@@ -178,6 +178,14 @@ class Read_Data:
         cookie_data = {}
         DL_mode = False
         return html_data, content_type, add_cookie, cookie_data, DL_mode
+    
+    def get_ranking(self, path_split, user_cookie, bf_cookie_data):
+        content_type = 'application/json'
+
+        html_data = '''{
+    "ranking":'''+self.ranking+'''
+}
+'''
 
 
 
