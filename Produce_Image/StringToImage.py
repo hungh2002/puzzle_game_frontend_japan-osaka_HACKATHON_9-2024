@@ -28,7 +28,7 @@ quiz.append(ntexts)
 print("quiz : ",quiz) #['これ は、文字列から作られた 画像です 。']
 # test = ["こ れ は、","文 字 列 か ら","作 ら れ た ","画 像 で す 。"]
 
-#文字列を4分割して、それぞれのリストに入れる
+#文字列を正方形に合うよう平方にして、それぞれのリストに入れる
 quarter = math.ceil(len(texts)**0.5)
 print("quarter : ",quarter)
 
@@ -56,7 +56,7 @@ ax.set_facecolor("white")
 square_size = imgsize // 4
 
 shapes = ["o","v","s","8","p","*","h","D","X"]
-for h in range(2):
+for h in range(4):
     for i in range(4):
         for j in range(4):
             #位置の記録
@@ -67,8 +67,8 @@ for h in range(2):
             # print(x_center,y_center)
 
             # ランダムなオフセットを追加
-            x_offset = random.uniform(-0.1 * square_size, 0.1 * square_size)
-            y_offset = random.uniform(-0.1 * square_size, 0.1 * square_size)
+            x_offset = random.uniform(-0.4 * square_size, 0.4 * square_size)
+            y_offset = random.uniform(-0.4 * square_size, 0.4 * square_size)
 
             # print(x_offset,y_offset)
 
@@ -77,13 +77,13 @@ for h in range(2):
 
             # print(x,y)
 
-            size = random.uniform(100, 5000)  # マーカーサイズ(面積)
+            size = random.uniform(100, 3000)  # マーカーサイズ(面積)
             color = (random.random(), random.random(), random.random())  # ランダムな色
             marker = random.choice(shapes) 
             rotate = random.uniform(0, 180)  # マーカーの回転角度
-            t = Affine2D().rotate_deg(rotate) + ax.transData  # 回転行列
+            # t = Affine2D().rotate_deg(rotate) + ax.transData  # 回転行列
             # マーカーをプロット
-            ax.scatter(x, y, s=size, c=[color], marker=marker, alpha=0.4, transform=t)
+            ax.scatter(x, y, s=size, c=[color], marker=marker, alpha=0.4, )
 
 #図を正方形に
 ax.set_aspect('equal')
