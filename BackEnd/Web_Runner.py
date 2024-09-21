@@ -23,7 +23,7 @@ import math
 os.chdir('/'.join(__file__.split('/')[:-1]))
 
 IP_addr = 'bomu.info'
-port_num = 60000
+port_num = 3000
 post_dic = {}
 get_dic = {}
 
