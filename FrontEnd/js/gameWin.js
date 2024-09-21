@@ -39,7 +39,13 @@ const gameWin = () => {
   questionForm.onsubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.target);
-    axios.get(`/send_answer/${data.get("answer")}/${user.userName}`);
+    if (user.userName !== undefined) {
+      axios.get(`/send_answer/${data.get("answer")}/${user.userName}`);
+    } else {
+      axios.get(
+        `/send_answer/${data.get("answer")}/anonymous_${new Date.now()}`
+      );
+    }
 
     document.getElementById("question-form").remove();
 

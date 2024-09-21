@@ -13,7 +13,7 @@ const ranking = async () => {
   for (let i = 0; i < data.ranking.length; i++) {
     const rank = document.createElement("li");
     index = i + 1;
-    rank.textContent = `${index}位: ${data.ranking[i]}`;
+    rank.textContent = `位: ${data.ranking[i]}`;
 
     ul.appendChild(rank);
   }
