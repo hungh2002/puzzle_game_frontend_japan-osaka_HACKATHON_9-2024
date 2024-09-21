@@ -194,6 +194,12 @@ class Read_Data:
         self.choice = []
         self.answer = 0
 
+        self.start_hour = 0
+        self.start_minute = 0
+
+        self.finish_hour = 0
+        self.finish_minute = 0
+
     def get_aasddds(self, path_split, user_cookie, bf_cookie_data):
         content_type = 'text/html'
         if len(path_split) == 2:
@@ -241,6 +247,18 @@ class Read_Data:
         self.question = "りんごは何色ですか？"
         self.choice = ["赤","黄","青","緑"]
         self.answer = 0
+
+        dt_now = datetime.datetime.now()
+
+        dt_start = dt_now + datetime.timedelta(minutes = 1)
+
+        self.start_hour = dt_start.hour
+        self.start_minute = dt_start.minute
+
+        dt_finish = dt_start + datetime.timedelta(minutes = 3)
+
+        self.finish_hour = dt_finish.hour
+        self.finish_minute = dt_finish.minute
 
         IM.produce_img()
 
@@ -299,12 +317,12 @@ class Read_Data:
     "question":'''+self.question+''',
     "answer":'''+json.dumps(self.choice)+''',
     "start_time":{
-        "hour":"何時",
-        "minute":"何分"
+        "hour":"'''+str(self.start_hour)+'''",
+        "minute":"'''+str(self.start_minute)+'''"
     },
     "finish_time":{
-        "hour":"何時",
-        "minute":"何分"
+        "hour":"'''+str(self.finish_hour)+'''",
+        "minute":"'''+str(self.finish_minute)+'''"
     }
 }
 '''
