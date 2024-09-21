@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import readline
 import math
 import os
@@ -86,7 +85,6 @@ if __name__ == "__main__":
         img.save("Produce_Image/SplitImg/image_" + str(i) + ".png")
 
 
-=======
 import readline
 import math
 import os
@@ -243,4 +241,3 @@ if __name__ == "__main__":
         img.save("Produce_Image/SplitImg/image_" + str(i) + ".png")
 
 
->>>>>>> bdccf45a98b8d25baee081a9290f8b0f3c6b7e82
