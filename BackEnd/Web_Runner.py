@@ -455,7 +455,20 @@ for i in server_list:
 @app_commands.choices(genre=[
     discord.app_commands.Choice(name="地理", value="地理"),
     discord.app_commands.Choice(name="スポーツ", value="スポーツ"),
-    discord.app_commands.Choice(name="理科", value="理科")
+    discord.app_commands.Choice(name="理科", value="理科"),
+    discord.app_commands.Choice(name="数学", value="数学"),
+    discord.app_commands.Choice(name="化学", value="化学"),
+    discord.app_commands.Choice(name="物理", value="物理"),
+    discord.app_commands.Choice(name="生物学", value="生物学"),
+    discord.app_commands.Choice(name="天文学", value="天文学"),
+    discord.app_commands.Choice(name="コンピューターサイエンス", value="コンピューターサイエンス"),
+    discord.app_commands.Choice(name="テクノロジー", value="テクノロジー"),
+    discord.app_commands.Choice(name="ゲーム", value="ゲーム"),
+    discord.app_commands.Choice(name="料理", value="料理"),
+    discord.app_commands.Choice(name="英語", value="英語"),
+    discord.app_commands.Choice(name="健康", value="健康とフィットネス"),
+    discord.app_commands.Choice(name="漫画", value="漫画"),
+    discord.app_commands.Choice(name="アニメ", value="アニメ")
     ])
 @app_commands.choices(difficulty=[
     discord.app_commands.Choice(name="めちゃむずレベル", value="専門家"),
