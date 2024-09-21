@@ -18,6 +18,8 @@ from PIL import Image, ImageDraw, ImageFont
 import datetime
 import math
 
+import API_KEY
+
 #from ..Produce_Image import StringToImage as STI
 
 os.chdir('/'.join(__file__.split('/')[:-1]))
@@ -27,6 +29,61 @@ port_num = 3000
 post_dic = {}
 get_dic = {}
 
+
+
+##################################################################################################
+
+
+import google.generativeai as genai
+
+
+def make_quiz(level='一般人'):
+    while True:
+        prompt = f"""
+        4択問題を一つだけ考えてください。難易度は{level}が解くレベルです。答えは一つになるように。
+        以下の形式で答えてください:
+        {{
+            "question": "string",
+            "choices": ["string1", "string2", "string3", "string4"],
+            "answer": "string"
+        }}
+        """
+        response = model.generate_content(prompt)
+        # JSONとしてパースする
+        response_data = json.loads(response.text)
+        question = response_data['question']
+        answer = answer=response_data['answer']
+        if (accuracy_check(question,answer)==True):
+            break
+        print('問題と答えの生合成が取れていない')
+    return response_data
+
+def accuracy_check(question,answer):
+    prompt = f"""{question}の答えとして{answer}は妥当の妥当性を1から100の整数で評価して。100が最も妥当性が高いとする.答えは数字のみ
+    """
+    accuracy = model.generate_content(prompt)
+    print(accuracy.text)
+    if(int(accuracy.text) > 80):
+        return True
+    elif(int(accuracy.text)>=0 ):
+        return False
+    else:
+        print('プロンプトエラー')
+        return False
+
+
+# API-KEYの設定
+GOOGLE_API_KEY=API_KEY.key
+if not GOOGLE_API_KEY:
+    raise EnvironmentError("Google APIキーが設定されていません。環境変数を確認してください。")
+
+genai.configure(api_key=GOOGLE_API_KEY)
+#モデルの設定
+model = genai.GenerativeModel("gemini-1.5-flash",generation_config={"response_mime_type": "application/json"})
+
+
+
+##################################################################################################
 
 #作成した画像を16分割する
 def ImgSplit(im,quarter):
@@ -52,12 +109,15 @@ class Image_Maker:
     def __init__(self):
         pass
 
-    def produce_img(self):
+    def produce_img(self, question_text, width):
 
         # 複数行の文字を出すのに、行ごとリストに入れてforで回す
         texts = []
         quiz = []
-        with open("Quiz_Text.txt","r") as f: #入力されたファイルを読み込む(デフォでNO1_58_...スタートになってる)
+
+        ntexts = question_text
+
+        '''with open("Quiz_Text.txt","r") as f: #入力されたファイルを読み込む(デフォでNO1_58_...スタートになってる)
             for w in f.read():  #ファイルの文章を読み込む
                 texts.append(w)
 
@@ -66,7 +126,7 @@ class Image_Maker:
         ntexts = "".join(texts)
         print(ntexts)
         quiz.append(ntexts)
-        print(quiz)
+        print(quiz)'''
         # test = ["こ れ は、","文 字 列 か ら","作 ら れ た ","画 像 で す 。"]
 
         #文字列を4分割して、それぞれのリストに入れる
@@ -84,12 +144,16 @@ class Image_Maker:
         # PCローカルのフォントへのパスと、フォントサイズを指定
         #font_path = "/Library/Fonts/BIZUDGothic-Bold.ttf"
         #font = ImageFont.truetype(font_path, 60)
-        font = ImageFont.truetype('Arial.ttf', 60)
+        print("D_Flags_00000")
+        font = ImageFont.truetype('./Noto_Sans_JP/NotoSansJP-VariableFont_wght.ttf', 60)
 
+        print("D_Flags_00001")
         # RGB, 画像サイズ, 背景色を設定
         image = Image.new("RGB", (quarter*60 + 20, quarter*60 + 20), (255, 255, 255))
 
+        print("D_Flags_00002")
         draw = ImageDraw.Draw(image)
+        print("D_Flags_00003")
         # 文字描画の初期位置（画像左上からx, yだけ離れた位置）
         x = 10
         y = 10
@@ -100,15 +164,20 @@ class Image_Maker:
             draw.text((x, y), nquiz[i], fill=(0, 0, 0), font=font)
             y += (quarter*60 - 60) // 3
 
+        print("D_Flags_00004")
         # ファイルに出力
         image.save("base_image.png")
 
+        print("D_Flags_00005")
         #os.makedirs("SplitImg", exist_ok=True)
         #ファイルを開く
         im = Image.open("base_image.png")
+        print("D_Flags_00006")
         ims = ImgSplit(im,quarter)
+        print("D_Flags_00007")
         for i, img in enumerate(ims):
-            img.save("img_" + str(int(i%self.width)) + str(int(i/self.width)) + ".png")
+            img.save("img_" + str(int(i%width)) + str(int(i/width)) + ".png")
+        print("D_Flags_00008")
 
 IM = Image_Maker()
 
@@ -192,7 +261,7 @@ class Read_Data:
 
         self.question = ""
         self.choice = []
-        self.answer = 0
+        self.answer = ""
 
         self.start_hour = 0
         self.start_minute = 0
@@ -243,10 +312,12 @@ class Read_Data:
     def get_make_room(self, path_split, user_cookie, bf_cookie_data):
         content_type = 'application/json'
 
+        response = make_quiz()
+
         self.ranking = []
-        self.question = "りんごは何色ですか？"
-        self.choice = ["赤","黄","青","緑"]
-        self.answer = 0
+        self.question = response['question']
+        self.choice = response['choices']
+        self.answer = response['answer']
 
         print('Debug_Flag_0000')
         dt_now = datetime.datetime.now()
@@ -263,7 +334,7 @@ class Read_Data:
         self.finish_hour = dt_finish.hour
         self.finish_minute = dt_finish.minute
 
-        IM.produce_img()
+        IM.produce_img(self.question, self.width)
 
         html_data = '''{
     "result":"success"
@@ -341,6 +412,9 @@ class Read_Data:
     "result":"success"
 }
 '''
+
+        print('#########____RECV____##########')
+        print(post_dic)
         if self.answer == int(post_dic['choice_answer']):
             self.ranking.append(post_dic['user_name'])
         add_cookie = False
