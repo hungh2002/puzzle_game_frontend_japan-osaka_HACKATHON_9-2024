@@ -29,7 +29,7 @@ get_dic = {}
 
 
 #作成した画像を16分割する
-def ImgSplit(im):
+def ImgSplit(im,quarter):
     height = (quarter*60 + 20) // 4
     width = (quarter*60 + 20) // 4
 
@@ -106,7 +106,7 @@ class Image_Maker:
         #os.makedirs("SplitImg", exist_ok=True)
         #ファイルを開く
         im = Image.open("base_image.png")
-        ims = ImgSplit(im)
+        ims = ImgSplit(im,quarter)
         for i, img in enumerate(ims):
             img.save("img_" + str(int(i%self.width)) + str(int(i/self.width)) + ".png")
 
