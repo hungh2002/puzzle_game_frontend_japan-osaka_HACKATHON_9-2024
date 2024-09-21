@@ -15,7 +15,7 @@ import hashlib
 import time
 import json
 from PIL import Image, ImageDraw, ImageFont
-from datetime import datetime
+import datetime
 import math
 
 #from ..Produce_Image import StringToImage as STI
@@ -194,6 +194,12 @@ class Read_Data:
         self.choice = []
         self.answer = 0
 
+        self.start_hour = 0
+        self.start_minute = 0
+
+        self.finish_hour = 0
+        self.finish_minute = 0
+
     def get_aasddds(self, path_split, user_cookie, bf_cookie_data):
         content_type = 'text/html'
         if len(path_split) == 2:
@@ -242,6 +248,21 @@ class Read_Data:
         self.choice = ["赤","黄","青","緑"]
         self.answer = 0
 
+        print('Debug_Flag_0000')
+        dt_now = datetime.datetime.now()
+
+        print('Debug_Flag_0001')
+        dt_start = dt_now + datetime.timedelta(minutes = 1)
+
+        print('Debug_Flag_0002')
+        self.start_hour = dt_start.hour
+        self.start_minute = dt_start.minute
+        print('Debug_Flag_0003')
+        dt_finish = dt_start + datetime.timedelta(minutes = 3)
+
+        self.finish_hour = dt_finish.hour
+        self.finish_minute = dt_finish.minute
+
         IM.produce_img()
 
         html_data = '''{
@@ -284,7 +305,7 @@ class Read_Data:
         content_type = 'application/json'
 
         html_data = '''{
-    "ranking":'''+json.dumps(self.ranking)+'''
+    "ranking":'''+json.dumps(self.ranking, ensure_ascii=False)+'''
 }
 '''
         add_cookie = False
@@ -297,14 +318,14 @@ class Read_Data:
 
         html_data = '''{
     "question":'''+self.question+''',
-    "answer":'''+json.dumps(self.choice)+''',
+    "answer":'''+json.dumps(self.choice, ensure_ascii=False)+''',
     "start_time":{
-        "hour":"何時",
-        "minute":"何分"
+        "hour":"'''+str(self.start_hour)+'''",
+        "minute":"'''+str(self.start_minute)+'''"
     },
     "finish_time":{
-        "hour":"何時",
-        "minute":"何分"
+        "hour":"'''+str(self.finish_hour)+'''",
+        "minute":"'''+str(self.finish_minute)+'''"
     }
 }
 '''
