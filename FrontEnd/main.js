@@ -32,11 +32,13 @@ setInterval(() => {
       shuffleImage();
 
       generatingDropBox(rows, columns);
-    }, (time.start.summary - (currentTime.getHours() * 60 + currentTime.getMinutes())) * 60 * 1000 - 30000);
+    }, 1000);
+    //(time.start.summary - (currentTime.getHours() * 60 + currentTime.getMinutes())) * 60 * 1000 - 30000
 
     setTimeout(() => {
       gameOver();
-    }, (time.finish.summary - (currentTime.getHours() * 60 + currentTime.getMinutes())) * 60 * 1000 - 30000);
+    }, 10000);
+    //(time.finish.summary - (currentTime.getHours() * 60 + currentTime.getMinutes())) * 60 * 1000 - 30000
 
     endGame();
   }
