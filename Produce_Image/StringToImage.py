@@ -21,24 +21,21 @@ with open(str(input()),"r") as f: #入力されたファイルを読み込む(�
         texts.append(w)
 
 #それぞれの文字列を1つの文字列に変換する
-print(texts)
-ntexts = "".join(texts)
-print(ntexts)
+print("texts : ",texts) #[こ, れ,  , は, 、, 文,  , 字,  , 列,  , か,  , ら,  , 作,  , ら,  , れ,  , た,  ,  , 画,  , 像,  , で,  , す,  ,  , 。]
+ntexts = "".join(texts) 
+print("ntexts : ",ntexts) #これ は、文 字 列 か ら作 ら れ た  画 像 で す  。
 quiz.append(ntexts)
-print(quiz)
+print("quiz : ",quiz) #['これ は、文字列から作られた 画像です 。']
 # test = ["こ れ は、","文 字 列 か ら","作 ら れ た ","画 像 で す 。"]
 
 #文字列を4分割して、それぞれのリストに入れる
-quarter = math.ceil(len(texts)/4)
-print(quarter)
+quarter = math.ceil(len(texts)**0.5)
+print("quarter : ",quarter)
 
-nquiz = [
-    ntexts[0:quarter],
-    ntexts[quarter:quarter*2],
-    ntexts[quarter*2:quarter*3],
-    ntexts[quarter*3:]
-]
-print(nquiz)
+nquiz = []
+for i in range(quarter):
+    nquiz.append(ntexts[i*quarter:(i+1)*quarter])
+print("nquiz : ",nquiz)
 
 # PCローカルのフォントへのパスと、フォントサイズを指定
 font_path = "/Library/Fonts/BIZUDGothic-Bold.ttf"
@@ -117,11 +114,14 @@ draw = ImageDraw.Draw(cropper_bg)
 x = 10
 y = 10
 
+if len(ntexts) <= (quarter**2)-quarter:
+    y += 30
+
 # 文字の描画
-for i in range(4):
+for i in range(quarter):
     # 描画位置、描画する文字、文字色、フォントを指定
     draw.text((x, y), nquiz[i], fill=(0, 0, 0), font=font, stroke_width=2, stroke_fill=(250,250,250))
-    y += (quarter*60 - 60) // 3
+    y += 60
 
 # ファイルに出力
 cropper_bg.save("Produce_Image/image.png")
