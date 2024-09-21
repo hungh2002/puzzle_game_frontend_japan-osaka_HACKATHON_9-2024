@@ -20,6 +20,17 @@ import math
 
 import API_KEY
 
+import discord
+from discord import app_commands
+
+import Token
+
+TOKEN = Token.TOKEN
+
+client = discord.Client(intents=discord.Intents.all())
+tree = app_commands.CommandTree(client)
+
+
 #カレントディレクトリをしっかりと指定
 os.chdir('/'.join(__file__.split('/')[:-1]))
 
@@ -38,10 +49,10 @@ import google.generativeai as genai
 
 #Geminiを使用した問題文の生成
 
-def make_quiz(level='一般人'):
+def make_quiz(level='一般人', genre = '地理'):
     while True:
         prompt = f"""
-        4択問題を一つだけ考えてください。難易度は{level}が解くレベルです。答えは一つになるように。
+        4択問題を一つだけ考えてください。難易度は{level}が解くレベルです。また、問題のジャンルは「{genre}」でお願いします。答えは一つになるように。過去に出した問題と似た問題は出してはいけない。コードを書いてはいけない。
         以下の形式で答えてください:
         {{
             "question": "string",
@@ -50,8 +61,15 @@ def make_quiz(level='一般人'):
         }}
         """
         response = model.generate_content(prompt)
-        # JSONとしてパースする
-        response_data = json.loads(response.text)
+        #JSONとしてパースする
+        try:
+            response_data = json.loads(response.text)
+        except json.JSONDecodeError as e:
+            print(f"JSONDecodeError: {e.msg}")
+            print(f"Error at line: {e.lineno}, column: {e.colno}, char: {e.pos}")
+            print(f"Response Text:", repr(response.text))
+            continue  # 再試行する
+        
         question = response_data['question']
         answer = answer=response_data['answer']
         if (accuracy_check(question,answer)==True):
@@ -61,16 +79,20 @@ def make_quiz(level='一般人'):
 
 #回答の妥当性のチェック
 def accuracy_check(question,answer):
-    prompt = f"""{question}の答えとして{answer}は妥当の妥当性を1から100の整数で評価して。100が最も妥当性が高いとする.答えは数字のみ
+    prompt = f"""{question}の答えとして{answer}は妥当の妥当性を1から100の整数で評価して。100が最も妥当性が高いとする。クイズとして成り立っていない場合、問題に回答が含まれている場合、選択肢が重複する場合スコアは低くなる。答えは数字のみ。
     """
     accuracy = model.generate_content(prompt)
     print(accuracy.text)
-    if(int(accuracy.text) > 80):
-        return True
-    elif(int(accuracy.text)>=0 ):
-        return False
-    else:
-        print('プロンプトエラー')
+
+    try:
+        if(int(accuracy.text) > 80):
+            return True
+        elif(int(accuracy.text)>=0 ):
+            return False
+        else:
+            print('プロンプトエラー')
+            return False
+    except:
         return False
 
 
@@ -379,7 +401,7 @@ class Read_Data:
         content_type = 'application/json'
 
         html_data = '''{
-    "question":'''+self.question+''',
+    "question":"'''+self.question+'''",
     "answer":'''+json.dumps(self.choice, ensure_ascii=False)+''',
     "start_time":{
         "hour":"'''+str(self.start_hour)+'''",
@@ -437,7 +459,6 @@ server_list = [threading.Thread(target=wss_server.serve) for i in range(listen_n
 for i in server_list:
     i.start()
 
-
 ############################################################################################################
 
 
@@ -445,7 +466,20 @@ for i in server_list:
 @app_commands.choices(genre=[
     discord.app_commands.Choice(name="地理", value="地理"),
     discord.app_commands.Choice(name="スポーツ", value="スポーツ"),
-    discord.app_commands.Choice(name="理科", value="理科")
+    discord.app_commands.Choice(name="理科", value="理科"),
+    discord.app_commands.Choice(name="数学", value="数学"),
+    discord.app_commands.Choice(name="化学", value="化学"),
+    discord.app_commands.Choice(name="物理", value="物理"),
+    discord.app_commands.Choice(name="生物学", value="生物学"),
+    discord.app_commands.Choice(name="天文学", value="天文学"),
+    discord.app_commands.Choice(name="コンピューターサイエンス", value="コンピューターサイエンス"),
+    discord.app_commands.Choice(name="テクノロジー", value="テクノロジー"),
+    discord.app_commands.Choice(name="ゲーム", value="ゲーム"),
+    discord.app_commands.Choice(name="料理", value="料理"),
+    discord.app_commands.Choice(name="英語", value="英語"),
+    discord.app_commands.Choice(name="健康", value="健康とフィットネス"),
+    discord.app_commands.Choice(name="漫画", value="漫画"),
+    discord.app_commands.Choice(name="アニメ", value="アニメ")
     ])
 @app_commands.choices(difficulty=[
     discord.app_commands.Choice(name="めちゃむずレベル", value="専門家"),
@@ -495,6 +529,8 @@ async def test_command(interaction: discord.Interaction,
     mes = str(difficulty)
     embed.add_field(name = '難易度',value = mes,inline=False)
 
+    mes = 'https://puzzle-steel-one.vercel.app/'
+    embed.add_field(name = '参加URL',value = mes,inline=False)
     
     embed.set_footer(text="ゲーム開始予告")
     

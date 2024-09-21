@@ -298,6 +298,7 @@ Keep-Alive: timeout=5, max=100
 Connection: Keep-Alive
 Content-Type: ''' + str(content_type) + '''; charset=UTF-8
 Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+Access-Control-Allow-Origin: *
 '''
                                 cookie_data_str = ''
                                 response = resP.encode('utf_8')
@@ -321,6 +322,7 @@ Keep-Alive: timeout=5, max=100
 Connection: Keep-Alive
 Content-Type: ''' + str(content_type) + '''; charset=UTF-8
 Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+Access-Control-Allow-Origin: *
 '''
                         
                         
