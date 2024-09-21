@@ -358,8 +358,9 @@ class Read_Data:
         pos_dic = {}
         for i in range(4):
             pos_dic[i] = {}
+        for i in range(4):
             for e in range(4):
-                pos_dic[i][e] = "img_"+str(board[i][e][0])+str(board[i][e][1])+".png"
+                pos_dic[e][i] = "img_"+str(board[i][e][0])+str(board[i][e][1])+".png"
         pos_dic_str = json.dumps(pos_dic)
 
 
