@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import discord
 from discord import app_commands
 import datetime
@@ -70,7 +69,6 @@ async def on_ready():
 client.run(TOKEN)
 
 
-=======
 import discord
 from discord import app_commands
 import datetime
@@ -142,4 +140,3 @@ async def on_ready():
 client.run(TOKEN)
 
 
->>>>>>> 0ef789c5e9224a2418dc86e1aaac2d877d4c7c1c
