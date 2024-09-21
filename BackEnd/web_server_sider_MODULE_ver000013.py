@@ -24,6 +24,7 @@ import sys
 
 
 
+#Cookie処理用関数
 def get_cookie(data):
     start_pos = data.find('Cookie: ') + 8
     if '\r' in data[start_pos:]:
@@ -40,7 +41,8 @@ def get_cookie(data):
             new_data[e[0]] = e[1]
     print(new_data)
     return new_data
-        
+
+#Cookieデータ作成用関数
 def make_cookie_data(data):
     new_data = 'Set-Cookie: '
     for i in list(data.keys()):
@@ -50,6 +52,7 @@ def make_cookie_data(data):
     return new_data
 
 
+#ソケットが閉じているかどうかの判定
 def is_socket_closed(sock):
     try:
         # send がエラーを起こさない場合はソケットはまだオープン
@@ -74,9 +77,8 @@ class TCPServer:
         try:
             # socketを生成
             self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            #server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             
-            self.IP_addr = IP_addr#'192.168.137.1'#socket.gethostname()#''
+            self.IP_addr = IP_addr
             self.port_num = port_num
 
             # socketをlocalhostのポート8080番に割り当てる
@@ -111,6 +113,7 @@ class TCPServer:
         """
         
         
+        #http通信をSSL化してhttps通信にする
         for i in range(self.listen_num):
             context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
             context.load_cert_chain(certfile="letsencrypt_SSL_BOMU.crt", keyfile="./letsencrypt_BOMU.key")
@@ -120,10 +123,13 @@ class TCPServer:
                 threading.Thread(target=self.handle_client, args=(ssoc,)).start()
             except:
                 pass
+    
+    #メインの通信用関数
     def handle_client(self,ssoc):
         while True:
             html_data = ''
             try:
+                #通信のタイムアウト時間を設定する
                 socket.setdefaulttimeout(5.0)
                 
                 # 外部からの接続を待ち、接続があったらコネクションを確立する
@@ -161,7 +167,7 @@ class TCPServer:
                         
                         content_type = 'text/html'
                         
-                        
+                        #ファイルダウンロードモードをOFFにする
                         DL_mode = False
                         DL_data = b''
 
@@ -171,12 +177,16 @@ class TCPServer:
                         post_mode = False
                         post_data = []
                         print('_FLAG_:A000000')
+
+                        #GETメソッドの場合はGet_ModeをONにする
                         if recv_split[0][0:3] == 'GET':
                             get_mode = True
                             print('Path:',recv_split[0][4:-10])
                             
                             path = recv_split[0][4:-10]
                         print('_FLAG_:A000001')
+
+                        #GETメソッドの場合はPost_ModeをONにする
                         if recv_split[0][0:4] == 'POST':
                             post_mode = True
                             print('Path:',recv_split[0][5:-10])
@@ -191,6 +201,8 @@ class TCPServer:
                                     e = i.split('=',1)
                                     post_dic[urllib.parse.unquote(e[0])] = urllib.parse.unquote(e[1])
                         print('_FLAG_:A000003')
+
+                        #画像送信に関する処理の部分
                         pic_send_mode = False
                         if '.png' in path:
                             pic_file_path = '.'+path
@@ -209,11 +221,14 @@ class TCPServer:
                         
                         path_split = path.split('/')
                         
+                        #Post_Modeの時の処理内容
                         if post_mode:
                             print('pOsT_FlAg')
                             if '/'+path_split[1] in list(self.post_dic.keys()):
                                 
                                 print(path_split)
+                                
+                                #Postメソッド対応用の関数として登録されている関数を検索して処理させる
                                 html_data, content_type, add_cookie, cookie_data, DL_mode = self.post_dic['/'+path_split[1]](path_split, user_cookie, cookie_data, post_dic)
                             else:
                                 html_data = "<script>location = 'https://bomu.info/home.html';</script>"
@@ -222,11 +237,15 @@ class TCPServer:
                                 DL_mode = False
 
                         print('_FLAG_:A000005')
+
+                        #Get_Modeの時の処理内容
                         if get_mode:
                             print('gEt_FlAg')
                             if '/'+path_split[1] in list(self.get_dic.keys()):
                                 
                                 print(path_split)
+
+                                #GETメソッド対応用の関数として登録されている関数を検索して処理させる
                                 html_data, content_type, add_cookie, cookie_data, DL_mode = self.get_dic['/'+path_split[1]](path_split, user_cookie, cookie_data)
                             else:
                                 html_data = "<script>location = 'https://bomu.info/home.html';</script>"
@@ -237,10 +256,13 @@ class TCPServer:
                         print(path)
                         print('_FLAG_:A000006')
                         print(type(html_data))
+
+                        #htmlに記載するURLを動的に変更できるようにするためのスペシャルタグ処理
                         html_data = html_data.replace('<>ThisIsURL<>',self.URL_data)
                         print('_FLAG_:A000007')
                         print(path,html_data)
                         
+                        #ダウンロードモードがONの時にはダウンロード処置をさせる
                         if DL_mode:
                             content_type = 'application/force-download'
                             html_data = DL_data
