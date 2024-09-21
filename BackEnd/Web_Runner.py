@@ -20,8 +20,7 @@ import math
 
 import API_KEY
 
-#from ..Produce_Image import StringToImage as STI
-
+#カレントディレクトリをしっかりと指定
 os.chdir('/'.join(__file__.split('/')[:-1]))
 
 IP_addr = 'bomu.info'
@@ -36,6 +35,8 @@ get_dic = {}
 
 import google.generativeai as genai
 
+
+#Geminiを使用した問題文の生成
 
 def make_quiz(level='一般人'):
     while True:
@@ -58,6 +59,7 @@ def make_quiz(level='一般人'):
         print('問題と答えの生合成が取れていない')
     return response_data
 
+#回答の妥当性のチェック
 def accuracy_check(question,answer):
     prompt = f"""{question}の答えとして{answer}は妥当の妥当性を1から100の整数で評価して。100が最も妥当性が高いとする.答えは数字のみ
     """
@@ -105,6 +107,7 @@ def ImgSplit(im,quarter):
 
 
 
+#スライドパズル用素材画像生成クラス
 class Image_Maker:
     def __init__(self):
         pass
@@ -116,18 +119,6 @@ class Image_Maker:
         quiz = []
 
         ntexts = question_text
-
-        '''with open("Quiz_Text.txt","r") as f: #入力されたファイルを読み込む(デフォでNO1_58_...スタートになってる)
-            for w in f.read():  #ファイルの文章を読み込む
-                texts.append(w)
-
-        #それぞれの文字列を1つの文字列に変換する
-        print(texts)
-        ntexts = "".join(texts)
-        print(ntexts)
-        quiz.append(ntexts)
-        print(quiz)'''
-        # test = ["こ れ は、","文 字 列 か ら","作 ら れ た ","画 像 で す 。"]
 
         #文字列を4分割して、それぞれのリストに入れる
         quarter = math.ceil(len(ntexts)/4)
@@ -142,8 +133,6 @@ class Image_Maker:
         print(nquiz)
 
         # PCローカルのフォントへのパスと、フォントサイズを指定
-        #font_path = "/Library/Fonts/BIZUDGothic-Bold.ttf"
-        #font = ImageFont.truetype(font_path, 60)
         print("D_Flags_00000")
         font = ImageFont.truetype('./Noto_Sans_JP/NotoSansJP-VariableFont_wght.ttf', 60)
 
@@ -206,9 +195,11 @@ def edit_file(path, dl):
 import hashlib
 import time
 
+#hash関数生成関数
 def make_hash(di):
     return hashlib.sha256(di.encode()).hexdigest()
 
+#hash値による乱数生成クラス
 class Random_Module:
 
     def __init__(self,seed):
@@ -222,7 +213,7 @@ class Random_Module:
 RM = Random_Module('Seed_2525' + str(time.time()))
 
 
-
+#スライドパズルのシャッフル関数
 def shuffle_puzzle(w,h):
     board = [[[i,e] for e in range(h)] for i in range(w)]
     for i in range(100):
@@ -254,37 +245,28 @@ def shuffle_puzzle(w,h):
 class Read_Data:
     def __init__(self):
         self.data_dic = {}
+
+        #スライドパズルの横方向の個数と縦方向の個数
         self.width = 4
         self.height = 4
 
+        #ランキングリスト
         self.ranking = []
 
+        #問題文と選択肢と正解
         self.question = ""
         self.choice = []
         self.answer = ""
 
+        #開始時刻
         self.start_hour = 0
         self.start_minute = 0
 
+        #終了時刻
         self.finish_hour = 0
         self.finish_minute = 0
 
-    def get_aasddds(self, path_split, user_cookie, bf_cookie_data):
-        content_type = 'text/html'
-        if len(path_split) == 2:
-            now_path = 'news.html'
-        else:
-            now_path = 'news/'+str(path_split[2])+'.html'
-        
-        html_data = self.data_dic.get(now_path)
-        if html_data == None:
-            html_data = read_file(now_path)
-
-        add_cookie = False
-        cookie_data = {}
-        DL_mode = False
-        return html_data, content_type, add_cookie, cookie_data, DL_mode
-
+    #CSSファイルリクエストへの対応関数
     def get_css_data(self, path_split, user_cookie, bf_cookie_data):
         content_type = 'text/css'
 
@@ -297,6 +279,7 @@ class Read_Data:
         DL_mode = False
         return html_data, content_type, add_cookie, cookie_data, DL_mode
 
+    #JavaScriptファイルへの対応関数
     def get_js_data(self, path_split, user_cookie, bf_cookie_data):
         content_type = 'text/js'
 
@@ -309,12 +292,16 @@ class Read_Data:
         DL_mode = False
         return html_data, content_type, add_cookie, cookie_data, DL_mode
 
+    #部屋の作成リクエストへの対応関数
     def get_make_room(self, path_split, user_cookie, bf_cookie_data):
         content_type = 'application/json'
 
+        #ランキングを初期化
+        self.ranking = []
+
+        #問題文と選択肢と回答を生成する
         response = make_quiz()
 
-        self.ranking = []
         self.question = response['question']
         self.choice = response['choices']
         self.answer = response['answer']
@@ -323,17 +310,22 @@ class Read_Data:
         dt_now = datetime.datetime.now()
 
         print('Debug_Flag_0001')
+
+        #開始時刻は1分後に設定
         dt_start = dt_now + datetime.timedelta(minutes = 1)
 
         print('Debug_Flag_0002')
         self.start_hour = dt_start.hour
         self.start_minute = dt_start.minute
         print('Debug_Flag_0003')
+
+        #終了時刻は開始時刻の3分後に設定
         dt_finish = dt_start + datetime.timedelta(minutes = 3)
 
         self.finish_hour = dt_finish.hour
         self.finish_minute = dt_finish.minute
 
+        #スライドパズルの素材画像生成
         IM.produce_img(self.question, self.width)
 
         html_data = '''{
@@ -344,16 +336,12 @@ class Read_Data:
         DL_mode = False
         return html_data, content_type, add_cookie, cookie_data, DL_mode
     
+    #スライドパズルの初期状態における配置と画像一覧のリクエストへの対応関数
     def get_img_list(self, path_split, user_cookie, bf_cookie_data):
         content_type = 'application/json'
 
+        #画像の並べ方を決定
         board = shuffle_puzzle(self.width,self.height)
-
-        '''img_list = []
-        for i in range(4):
-            for e in range(4):
-                img_list.append("img_"+str(i)+str(e)+".png")
-        img_list_str = json.dumps(img_list)'''
 
         pos_dic = {}
         for i in range(4):
@@ -373,6 +361,7 @@ class Read_Data:
         DL_mode = False
         return html_data, content_type, add_cookie, cookie_data, DL_mode
     
+    #ランキングリクエストへの対応関数
     def get_ranking(self, path_split, user_cookie, bf_cookie_data):
         content_type = 'application/json'
 
@@ -385,6 +374,7 @@ class Read_Data:
         DL_mode = False
         return html_data, content_type, add_cookie, cookie_data, DL_mode
 
+    #問題文と選択肢と開始時刻・終了時刻リクエストへの対応関数
     def get_q_and_a(self, path_split, user_cookie, bf_cookie_data):
         content_type = 'application/json'
 
@@ -406,6 +396,7 @@ class Read_Data:
         DL_mode = False
         return html_data, content_type, add_cookie, cookie_data, DL_mode
 
+    #フロントエンドからのユーザーごとの回答送信への対応関数(POSTメソッド)
     def post_send_answer(self, path_split, user_cookie, cookie_data, post_dic):
         content_type = 'application/json'
 
