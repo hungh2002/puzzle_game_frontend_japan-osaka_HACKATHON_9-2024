@@ -20,6 +20,17 @@ import math
 
 import API_KEY
 
+import discord
+from discord import app_commands
+
+import Token
+
+TOKEN = Token.TOKEN
+
+client = discord.Client(intents=discord.Intents.all())
+tree = app_commands.CommandTree(client)
+
+
 #カレントディレクトリをしっかりと指定
 os.chdir('/'.join(__file__.split('/')[:-1]))
 
@@ -38,10 +49,10 @@ import google.generativeai as genai
 
 #Geminiを使用した問題文の生成
 
-def make_quiz(level='一般人'):
+def make_quiz(level='一般人', genre = '地理'):
     while True:
         prompt = f"""
-        4択問題を一つだけ考えてください。難易度は{level}が解くレベルです。答えは一つになるように。
+        4択問題を一つだけ考えてください。難易度は{level}が解くレベルです。また、問題のジャンルは「{genre}」でお願いします。答えは一つになるように。
         以下の形式で答えてください:
         {{
             "question": "string",
@@ -379,7 +390,7 @@ class Read_Data:
         content_type = 'application/json'
 
         html_data = '''{
-    "question":'''+self.question+''',
+    "question":"'''+self.question+'''",
     "answer":'''+json.dumps(self.choice, ensure_ascii=False)+''',
     "start_time":{
         "hour":"'''+str(self.start_hour)+'''",
@@ -436,7 +447,6 @@ wss_server = WSS.TCPServer(post_dic, get_dic, IP_addr, port_num, listen_num)
 server_list = [threading.Thread(target=wss_server.serve) for i in range(listen_num)]
 for i in server_list:
     i.start()
-
 
 ############################################################################################################
 
