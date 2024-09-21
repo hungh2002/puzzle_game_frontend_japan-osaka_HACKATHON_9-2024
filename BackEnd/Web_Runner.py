@@ -464,6 +464,7 @@ for i in server_list:
 
 @tree.command(name="ゲーム開始設定",description="スライドパズルゲームの開始時刻と終了時刻を設定します")
 @app_commands.choices(genre=[
+    discord.app_commands.Choice(name="愛", value="愛"),
     discord.app_commands.Choice(name="地理", value="地理"),
     discord.app_commands.Choice(name="スポーツ", value="スポーツ"),
     discord.app_commands.Choice(name="理科", value="理科"),
