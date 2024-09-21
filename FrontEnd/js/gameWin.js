@@ -1,5 +1,9 @@
 import { axios } from "./axios";
+import { ranking } from "./ranking";
 import { user } from "./user";
+
+let interval;
+let countDown = 0;
 
 const gameWin = () => {
   const questionForm = document.getElementById("question-form");
@@ -35,12 +39,19 @@ const gameWin = () => {
   questionForm.onsubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.target);
-    axios.post(`/send_answer`, {
-      user_name: user.userName ? user.userName : "anonymous",
-      choice_answer: data.answer,
-    });
+    axios.get(`/send_answer/${data.get("answer")}/${user.userName}`);
 
     document.getElementById("question-form").remove();
+
+    interval = setInterval(() => {
+      if (countDown <= user.time.finishTime * 1000) {
+        ranking();
+        countDown = countDown + 1;
+      } else {
+        countDown = 0;
+        clearInterval(interval);
+      }
+    }, 1000);
   };
 
   questionForm.appendChild(submitButton);
