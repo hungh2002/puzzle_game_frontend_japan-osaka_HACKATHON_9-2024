@@ -52,7 +52,7 @@ import google.generativeai as genai
 def make_quiz(level='一般人', genre = '地理'):
     while True:
         prompt = f"""
-        4択問題を一つだけ考えてください。難易度は{level}が解くレベルです。また、問題のジャンルは「{genre}」でお願いします。答えは一つになるように。
+        4択問題を一つだけ考えてください。難易度は{level}が解くレベルです。また、問題のジャンルは「{genre}」でお願いします。答えは一つになるように。過去に出した問題と似た問題は出してはいけない。コードを書いてはいけない。
         以下の形式で答えてください:
         {{
             "question": "string",
@@ -61,8 +61,15 @@ def make_quiz(level='一般人', genre = '地理'):
         }}
         """
         response = model.generate_content(prompt)
-        # JSONとしてパースする
-        response_data = json.loads(response.text)
+        #JSONとしてパースする
+        try:
+            response_data = json.loads(response.text)
+        except json.JSONDecodeError as e:
+            print(f"JSONDecodeError: {e.msg}")
+            print(f"Error at line: {e.lineno}, column: {e.colno}, char: {e.pos}")
+            print(f"Response Text:", repr(response.text))
+            continue  # 再試行する
+        
         question = response_data['question']
         answer = answer=response_data['answer']
         if (accuracy_check(question,answer)==True):
@@ -72,16 +79,20 @@ def make_quiz(level='一般人', genre = '地理'):
 
 #回答の妥当性のチェック
 def accuracy_check(question,answer):
-    prompt = f"""{question}の答えとして{answer}は妥当の妥当性を1から100の整数で評価して。100が最も妥当性が高いとする.答えは数字のみ
+    prompt = f"""{question}の答えとして{answer}は妥当の妥当性を1から100の整数で評価して。100が最も妥当性が高いとする。クイズとして成り立っていない場合、問題に回答が含まれている場合、選択肢が重複する場合スコアは低くなる。答えは数字のみ。
     """
     accuracy = model.generate_content(prompt)
     print(accuracy.text)
-    if(int(accuracy.text) > 80):
-        return True
-    elif(int(accuracy.text)>=0 ):
-        return False
-    else:
-        print('プロンプトエラー')
+
+    try:
+        if(int(accuracy.text) > 80):
+            return True
+        elif(int(accuracy.text)>=0 ):
+            return False
+        else:
+            print('プロンプトエラー')
+            return False
+    except:
         return False
 
 
@@ -518,6 +529,8 @@ async def test_command(interaction: discord.Interaction,
     mes = str(difficulty)
     embed.add_field(name = '難易度',value = mes,inline=False)
 
+    mes = 'https://puzzle-steel-one.vercel.app/'
+    embed.add_field(name = '参加URL',value = mes,inline=False)
     
     embed.set_footer(text="ゲーム開始予告")
     
