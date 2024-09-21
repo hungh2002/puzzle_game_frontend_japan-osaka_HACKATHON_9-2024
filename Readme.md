@@ -58,8 +58,18 @@
 
 
 
-「bomu.info:60000/send_answer/ユーザー名/選択肢の番号」
+「bomu.info:60000/send_answer」
 "ユーザー名"で指定されたユーザーの選択肢の回答番号が"選択肢の番号"であるとして送信する
+
+メソッドはPOSTメソッド
+user_name：ユーザー名
+choice_answer：選択した選択肢の番号
+
+
+レスポンスは以下のjson形式
+{
+    "result":"success"
+}
 
 
 「bomu.info:60000/ranking」

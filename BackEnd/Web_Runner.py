@@ -100,6 +100,10 @@ class Read_Data:
 
         self.ranking = []
 
+        self.question = ""
+        self.choice = []
+        self.answer = 0
+
     def get_aasddds(self, path_split, user_cookie, bf_cookie_data):
         content_type = 'text/html'
         if len(path_split) == 2:
@@ -183,11 +187,48 @@ class Read_Data:
         content_type = 'application/json'
 
         html_data = '''{
-    "ranking":'''+self.ranking+'''
+    "ranking":'''+json.dumps(self.ranking)+'''
 }
 '''
+        add_cookie = False
+        cookie_data = {}
+        DL_mode = False
+        return html_data, content_type, add_cookie, cookie_data, DL_mode
 
+    def get_q_and_a(self, path_split, user_cookie, bf_cookie_data):
+        content_type = 'application/json'
 
+        html_data = '''{
+    "question":'''+question+''',
+    "answer":'''+json.dumps(choice)+''',
+    "start_time":{
+        "hour":"何時",
+        "minute":"何分"
+    },
+    "finish_time":{
+        "hour":"何時",
+        "minute":"何分"
+    }
+}
+'''
+        add_cookie = False
+        cookie_data = {}
+        DL_mode = False
+        return html_data, content_type, add_cookie, cookie_data, DL_mode
+
+    def post_send_answer(self, path_split, user_cookie, cookie_data, post_dic):
+        content_type = 'application/json'
+
+        html_data = '''{
+    "result":"success"
+}
+'''
+        if self.answer == int(post_dic['choice_answer']):
+            self.ranking.append(post_dic['user_name'])
+        add_cookie = False
+        cookie_data = {}
+        DL_mode = False
+        return html_data, content_type, add_cookie, cookie_data, DL_mode
 
 
 
@@ -195,9 +236,11 @@ RD = Read_Data()
 
 get_dic['/make_room'] = RD.get_make_room
 get_dic['/img_list'] = RD.get_img_list
+get_dic['/q_and_a'] = RD.get_q_and_a
+get_dic['/ranking'] = RD.get_ranking
 
-get_dic['/'] = RD.get_intro_project_data
-get_dic['/maintenance'] = RD.get_maintenance_data
+post_dic['/send_answer'] = RD.post_send_answer
+
 get_dic['/css'] = RD.get_css_data
 get_dic['/js'] = RD.get_js_data
 
