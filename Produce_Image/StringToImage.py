@@ -1,6 +1,7 @@
 import readline
 import math
 import os
+
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 """
@@ -41,9 +42,22 @@ font_path = "/Library/Fonts/BIZUDGothic-Bold.ttf"
 font = ImageFont.truetype(font_path, 60)
 
 # RGB, 画像サイズ, 背景色を設定
-image = Image.new("RGB", (quarter*60 + 20, quarter*60 + 20), (255, 255, 255))
+# image = Image.new("RGB", (quarter*60 + 20, quarter*60 + 20), (255, 255, 255))
 
-draw = ImageDraw.Draw(image)
+# 背景画像を読み込む
+backgroundImage = Image.open("Produce_Image/backgroundImg2.jpg")
+
+#文字サイズに合わせて画像をトリミング
+text_size = quarter*60 + 20
+backgroundWidth , backgroundHeight = backgroundImage.size
+left = (backgroundWidth - text_size) //2
+top = (backgroundHeight - text_size) //2
+right = left + text_size
+bottom = top + text_size
+
+cropper_bg = backgroundImage.crop((left,top,right,bottom))
+
+draw = ImageDraw.Draw(cropper_bg)
 # 文字描画の初期位置（画像左上からx, yだけ離れた位置）
 x = 10
 y = 10
@@ -51,11 +65,11 @@ y = 10
 # 文字の描画
 for i in range(4):
     # 描画位置、描画する文字、文字色、フォントを指定
-    draw.text((x, y), nquiz[i], fill=(0, 0, 0), font=font)
+    draw.text((x, y), nquiz[i], fill=(0, 0, 0), font=font, stroke_width=2, stroke_fill=(250,250,250))
     y += (quarter*60 - 60) // 3
 
 # ファイルに出力
-image.save("Produce_Image/image.png")
+cropper_bg.save("Produce_Image/image.png")
 
 #作成した画像を16分割する
 def ImgSplit(im):
