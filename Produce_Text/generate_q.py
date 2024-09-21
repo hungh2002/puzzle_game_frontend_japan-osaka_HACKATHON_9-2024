@@ -41,7 +41,7 @@ def make_quiz(level='一般人',category='None'):
 
 def accuracy_check(question,answer):
     #妥当性の数値化
-    prompt = f"""{question}の答えとして{answer}は妥当の妥当性を1から100の整数で評価して。100が最も妥当性が高いとする。クイズとして成り立っていない場合、問題に回答が含まれている場合、選択肢が重複する場合スコアは低くなる。答えは数字のみ。"""
+    prompt = f"""{question}の答えとして{answer}は妥当の妥当性を1から100の整数で評価して。100が最も妥当性が高いとする。クイズとして成り立っていない場合、問題に回答が含まれている場合、選択肢が重複する場合スコアは低くなる。答えは100以下の数字一つのみ。"""
     accuracy = model.generate_content(prompt)
 
     #textから数値だけ抜き出す
