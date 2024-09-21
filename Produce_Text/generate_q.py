@@ -106,6 +106,7 @@ q_and_a = Q_and_A(
 print("Question:", q_and_a.question)
 print("Choices:", q_and_a.choices)
 print("Answer:", q_and_a.answer)
+<<<<<<< HEAD
 =======
 import google.generativeai as genai
 from dotenv import load_dotenv
@@ -215,3 +216,5 @@ print("Question:", q_and_a.question)
 print("Choices:", q_and_a.choices)
 print("Answer:", q_and_a.answer)
 >>>>>>> 0ef789c5e9224a2418dc86e1aaac2d877d4c7c1c
+=======
+>>>>>>> bdccf45a98b8d25baee081a9290f8b0f3c6b7e82
