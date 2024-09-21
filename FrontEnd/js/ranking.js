@@ -1,11 +1,8 @@
 import { axios } from "./axios";
 
 const ranking = async () => {
-  //   const response = await axios.get("/ranking");
-  //   const data = response.data;
-  const data = {
-    ranking: ["1位のユーザー名", "2位のユーザー名", "3位のユーザー名"],
-  };
+  const response = await axios.get("/ranking");
+  const data = response.data;
 
   const app = document.getElementById("app");
   const ranking = document.createElement("ranking");

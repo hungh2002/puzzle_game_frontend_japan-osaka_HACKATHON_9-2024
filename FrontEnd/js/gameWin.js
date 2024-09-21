@@ -1,31 +1,18 @@
 import { axios } from "./axios";
+import { user } from "./user";
 
-const gameWin = async () => {
-  const board = document.getElementById("board");
-  const questionForm = document.createElement("question-form");
-  questionForm.id = "question-form";
+const gameWin = () => {
+  const questionForm = document.getElementById("question-form");
+  questionForm.style.display = "block";
 
-  const fieldset = document.createElement("fieldset");
-  const question = document.createElement("legend");
-  question.id = "question";
+  const fieldset = questionForm.getElementsByTagName("fieldset")[0];
+  const question = fieldset.getElementsByTagName("legend")[0];
 
-  const submitButton = document.createElement("button");
-  submitButton.type = "submit";
-  submitButton.textContent = "Send";
+  const submitButton = questionForm.getElementsByTagName("button")[0];
 
-  //   const response = await axios.get("/q_and_a");
-  //   const data = response.data;
-  const data = {
-    question: "問題文",
-    answer: [
-      "回答の選択肢_1",
-      "回答の選択肢_2",
-      "回答の選択肢_3",
-      "回答の選択肢_4",
-    ],
-  };
+  const data = user.questionAndAnswer;
+
   question.textContent = data.question;
-  fieldset.appendChild(question);
 
   for (let i = 0; i < data.answer.length; i++) {
     const br = document.createElement("br");
@@ -45,17 +32,18 @@ const gameWin = async () => {
     fieldset.appendChild(br);
   }
 
-  questionForm.appendChild(fieldset);
-  questionForm.appendChild(submitButton);
-  board.appendChild(questionForm);
-
   questionForm.onsubmit = (event) => {
     event.preventDefault();
-    // const data = new FormData(e.target);
-    // axios.get(`/send_answer/${"ユーザー名"}/${data.get("answer")}`);
+    const data = new FormData(event.target);
+    axios.post(`/send_answer`, {
+      user_name: user.userName ? user.userName : "anonymous",
+      choice_answer: data.answer,
+    });
 
     document.getElementById("question-form").remove();
   };
+
+  questionForm.appendChild(submitButton);
 };
 
 export { gameWin };

@@ -10,8 +10,25 @@
     <div id="app">
       <div id="title">
         <h1>Slide Puzzle</h2>
+          <form id="username-form">
+            UserName: <input type="text" name="userName" id="username" placeholder="Enter your name" required />
+            <button type="submit" class="button" style="width: 7rem;">Save</button>
+          </form>
           <img id="thumbnail" src="images/thumbnail.jpg" alt="thumbnail">
-        <button id="playing-button">Play</button>
+        <button id="playing-button" class="button" >Play</button>
+      </div>
+      
+
+      <div id="timer"></div>
+      <div id="board">
+        <div id="drag-aria"></div>
+        <div id="drop-aria"></div>
+        <form id="question-form">
+          <fieldset>
+            <legend></legend>
+          </fieldset>
+          <button type="submit">Send</button>
+        </form>
       </div>
     </div>
 

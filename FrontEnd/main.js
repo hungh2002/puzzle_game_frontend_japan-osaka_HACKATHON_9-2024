@@ -1,45 +1,41 @@
-import { checkGameOver } from "./js/checkGameOver";
 import { gameOver } from "./js/gameOver";
 import { generatingCSSGrid } from "./js/generatingCSSGrid";
 import { generatingDragBox } from "./js/generatingDragBox";
 import { generatingDropBox } from "./js/generatingDropBox";
-import { ranking } from "./js/ranking";
-import { shuffleImage } from "./js/shuffleImage";
-import { endGame, getTime, isPlaying, playing } from "./js/timer";
+import { timer } from "./js/timer";
+import { user } from "./js/user";
 import "./style.css";
 
-const rows = 3;
-const columns = 3;
+const rows = 4;
+const columns = 4;
 
 const playingButton = document.getElementById("playing-button");
 playingButton.onclick = () => {
-  playing();
+  user.setIsPlaying(true);
 };
 
-setInterval(() => {
-  if (isPlaying) {
-    let time = getTime();
-    let currentTime = new Date();
+setInterval(async () => {
+  user.setUsername();
+  if (user.isPlaying) {
+    await user.setTime();
+    timer();
 
-    setTimeout(() => {
+    setTimeout(async () => {
       const title = document.getElementById("title");
       title.style.display = "none";
+      const userNameForm = document.getElementById("username-form");
+      userNameForm.style.display = "none";
 
       generatingCSSGrid(rows, columns);
       generatingDragBox(rows, columns);
 
-      // Shuffling images
-      shuffleImage();
-
       generatingDropBox(rows, columns);
-    }, 1000);
-    //(time.start.summary - (currentTime.getHours() * 60 + currentTime.getMinutes())) * 60 * 1000 - 30000
+    }, user.time.startTime);
 
     setTimeout(() => {
       gameOver();
-    }, 10000);
-    //(time.finish.summary - (currentTime.getHours() * 60 + currentTime.getMinutes())) * 60 * 1000 - 30000
+    }, user.time.finishTime);
 
-    endGame();
+    user.setIsPlaying(false);
   }
 }, 1000);

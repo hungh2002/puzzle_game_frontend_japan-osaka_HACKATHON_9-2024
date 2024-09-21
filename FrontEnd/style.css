@@ -15,20 +15,26 @@
 body {
   margin: 0;
   padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
 
+html,
+body,
+#app,
+#app > div,
+#board {
+  width: 100%;
+}
+
 #ranking {
   line-height: 3;
-  position: fixed;
+  position: absolute;
+  top: 40%;
   left: 40%;
-  top: 30%;
   background-color: #1cb0f6;
 }
+
 #ranking ul {
   list-style-position: inside;
   list-style-type: decimal;
@@ -36,10 +42,12 @@ body {
 }
 
 #question-form {
-  position: fixed;
-  left: 40%;
+  display: none;
+  position: absolute;
   top: 40%;
+  left: 40%;
   background-color: #1cb0f6;
+  font-size: x-large;
 }
 #question-form legend {
   background-color: lightblue;
@@ -49,12 +57,29 @@ body {
   display: flex;
   align-items: center;
   flex-direction: column;
-  width: 45rem;
+
+  width: 25rem;
+  height: 35rem;
+}
+
+#title h1 {
+  margin: 0;
+}
+
+#username-form {
+  z-index: 1;
+  background-color: aqua;
+  padding: 0.2rem;
+  font-size: x-large;
 }
 
 #thumbnail {
-  width: 100%;
-  height: 100%;
+  width: 50rem;
+  height: 50rem;
+}
+
+#username {
+  height: 2rem;
 }
 
 #title h1 {
@@ -63,8 +88,9 @@ body {
 }
 
 #board {
-  display: flex;
-  gap: 7rem;
+  display: none;
+  margin-left: 2rem;
+  gap: 15rem;
 }
 
 #drag-aria {
@@ -88,21 +114,39 @@ body {
 }
 
 #drop-aria {
+  width: 10rem;
+  height: 10rem;
   display: grid;
-  gap: 0.5rem;
+  gap: 0.1rem;
 }
 
 .drop-box {
-  width: 10rem;
-  height: 10rem;
+  width: 7rem;
+  height: 7rem;
   background: #0003;
+}
+
+#timer {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 0%;
+  align-items: center;
+}
+
+#timer div {
+  background-color: #1cb0f6;
+  width: 8rem;
+  align-items: center;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
 }
 
 .answer {
   background-color: darkgrey;
 }
 
-#playing-button {
+.button {
   appearance: button;
   background-color: #1899d6;
   border: solid transparent;
@@ -130,10 +174,10 @@ body {
   -webkit-user-select: none;
   vertical-align: middle;
   white-space: nowrap;
-  width: 100%;
+  width: 50rem;
 }
 
-#playing-button:after {
+.button:after {
   background-clip: padding-box;
   background-color: #1cb0f6;
   border: solid transparent;
@@ -148,21 +192,21 @@ body {
   z-index: -1;
 }
 
-#playing-button,
-#playing-button:focus {
+.button,
+.button:focus {
   user-select: auto;
 }
 
-#playing-button:hover:not(:disabled) {
+.button:hover:not(:disabled) {
   filter: brightness(1.1);
   -webkit-filter: brightness(1.1);
 }
 
-#playing-button:disabled {
+.button:disabled {
   cursor: auto;
 }
 
-#playing-button:active {
+.button:active {
   border-width: 4px 0 0;
   background: none;
 }

@@ -1,27 +1,40 @@
-let isPlaying = false;
+import { user } from "./user";
 
-const playing = () => {
-  isPlaying = true;
+let timerStatus = true;
+
+const timer = () => {
+  if (timerStatus) {
+    let hourStart = user.time.detail.start_time.hour;
+    let minuteStart = user.time.detail.start_time.minute;
+    let hourFinish = user.time.detail.finish_time.hour;
+    let minuteFinish = user.time.detail.finish_time.minute;
+    let playingTime = user.time.finishTime - user.time.startTime;
+
+    const timer = document.getElementById("timer");
+    const br = document.createElement("br");
+    timer.style.display = "inline-block";
+
+    //   const elapsedTime = document.createElement("div");
+    const timeStatus = document.createElement("div");
+    timeStatus.textContent = `Start: ${hourStart}:${minuteStart} ~ ${hourFinish}:${minuteFinish}`;
+    //   elapsedTime.textContent = `Time elapsed: ${playingTime * 1000}`;
+
+    //   timer.appendChild(elapsedTime);
+    timer.appendChild(br);
+    timer.appendChild(timeStatus);
+
+    const interval = setInterval(() => {
+      if (playingTime == 0) {
+        clearInterval(interval);
+      }
+
+      // elapsedTime.textContent = `Time elapsed: ${playingTime * 1000}`;
+
+      playingTime = playingTime - 1000;
+    }, 1000);
+
+    timerStatus = false;
+  }
 };
 
-const endGame = () => {
-  isPlaying = false;
-};
-
-const getTime = () => {
-  //axios
-  const data = {
-    start: { hour: new Date().getHours(), minute: new Date().getMinutes() + 1 },
-    finish: {
-      hour: new Date().getHours(),
-      minute: new Date().getMinutes() + 2,
-    },
-  };
-
-  data.start.summary = data.start.hour * 60 + data.start.minute;
-  data.finish.summary = data.finish.hour * 60 + data.finish.minute;
-
-  return data;
-};
-
-export { isPlaying, getTime, playing, endGame };
+export { timer };
