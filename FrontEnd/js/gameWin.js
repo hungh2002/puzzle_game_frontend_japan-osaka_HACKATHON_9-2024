@@ -13,6 +13,7 @@ const gameWin = () => {
   const question = fieldset.getElementsByTagName("legend")[0];
 
   const submitButton = questionForm.getElementsByTagName("button")[0];
+  submitButton.classList.add("button");
 
   const data = user.questionAndAnswer;
 

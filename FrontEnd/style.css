@@ -50,7 +50,7 @@ body,
   display: none;
   position: absolute;
   top: 40%;
-  left: 40%;
+  left: 20%;
   background-color: #1cb0f6;
   font-size: x-large;
 }
@@ -79,8 +79,8 @@ body,
 }
 
 #thumbnail {
-  width: 50rem;
-  height: 50rem;
+  width: 60rem;
+  height: 40rem;
 }
 
 #username {
@@ -149,6 +149,7 @@ body,
 
 .answer {
   background-color: darkgrey;
+  z-index: 2;
 }
 
 .button {
@@ -179,7 +180,7 @@ body,
   -webkit-user-select: none;
   vertical-align: middle;
   white-space: nowrap;
-  width: 50rem;
+  width: 60rem;
 }
 
 .button:after {
