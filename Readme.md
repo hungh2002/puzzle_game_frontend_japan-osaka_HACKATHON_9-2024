@@ -59,12 +59,10 @@
 
 
 
-「bomu.info:3000/send_answer」
+「bomu.info:3000/send_answer/choice_answer/user_name」
 "ユーザー名"で指定されたユーザーの選択肢の回答番号が"選択肢の番号"であるとして送信する
 
-メソッドはPOSTメソッド
-user_name：ユーザー名
-choice_answer：選択した選択肢の番号
+メソッドはGETメソッド
 
 
 レスポンスは以下のjson形式
