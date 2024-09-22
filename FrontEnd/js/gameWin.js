@@ -43,7 +43,7 @@ const gameWin = () => {
       axios.get(`/send_answer/${data.get("answer")}/${user.userName}`);
     } else {
       axios.get(
-        `/send_answer/${data.get("answer")}/anonymous_${new Date.now()}`
+        `/send_answer/${data.get("answer")}/anonymous_${new Date().getTime()}`
       );
     }
 

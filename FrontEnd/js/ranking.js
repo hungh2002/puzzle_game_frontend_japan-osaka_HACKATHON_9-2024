@@ -4,22 +4,21 @@ const ranking = async () => {
   const response = await axios.get("/ranking");
   const data = response.data;
 
-  const app = document.getElementById("app");
-  const ranking = document.createElement("ranking");
-  ranking.id = "ranking";
-  const ul = document.createElement("ul");
+  const ranking = document.getElementById("ranking");
+  ranking.style.display = "flex";
+  ranking.style.justifyContent = "center";
+  ranking.style.alignItems = "center";
+  ranking.style.flexDirection = "column";
+
+  const ul = ranking.getElementsByTagName("ul")[0];
 
   let index;
+  let li = "";
   for (let i = 0; i < data.ranking.length; i++) {
-    const rank = document.createElement("li");
     index = i + 1;
-    rank.textContent = `位: ${data.ranking[i]}`;
-
-    ul.appendChild(rank);
+    li = li + `<li>位: ${data.ranking[i]}</li>`;
   }
-
-  ranking.appendChild(ul);
-  app.appendChild(ranking);
+  ul.innerHTML = li;
 };
 
 export { ranking };

@@ -28,17 +28,22 @@ body,
 }
 
 #ranking {
+  display: none;
   line-height: 3;
   position: absolute;
   top: 40%;
-  left: 40%;
-  background-color: #1cb0f6;
+  left: 0;
 }
 
 #ranking ul {
   list-style-position: inside;
   list-style-type: decimal;
   padding: 2rem;
+  background-color: #1cb0f6;
+}
+
+#ranking ul li {
+  font-size: xx-large;
 }
 
 #question-form {
