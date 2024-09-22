@@ -21,7 +21,7 @@ import os
 
 import sys
 
-
+import datetime
 
 
 #Cookie処理用関数
@@ -178,6 +178,11 @@ class TCPServer:
                         post_data = []
                         print('_FLAG_:A000000')
 
+                        if recv_split[0][0:7] == 'OPTIONS':
+                            content_type = 'Authorization'
+                            html_data = ''
+                            path = recv_split[0][8:-10]
+                        
                         #GETメソッドの場合はGet_ModeをONにする
                         if recv_split[0][0:3] == 'GET':
                             get_mode = True
@@ -227,6 +232,7 @@ class TCPServer:
                             if '/'+path_split[1] in list(self.post_dic.keys()):
                                 
                                 print(path_split)
+                                print(self.post_dic)
                                 
                                 #Postメソッド対応用の関数として登録されている関数を検索して処理させる
                                 html_data, content_type, add_cookie, cookie_data, DL_mode = self.post_dic['/'+path_split[1]](path_split, user_cookie, cookie_data, post_dic)
@@ -278,6 +284,12 @@ class TCPServer:
                             data_length = len(html_data)
                         print('_FLAG_:A000009')
 
+                        # 現在のGMT時間を取得
+                        gmt_time = datetime.datetime.utcnow()
+
+                        # GMT形式で文字列に変換
+                        gmt_time_str = gmt_time.strftime('%a, %d %b %Y %H:%M:%S GMT')
+
                         print('CK_FLAG:0000')
                         cookie_data_str = ''
                         if add_cookie:
@@ -285,7 +297,7 @@ class TCPServer:
                             for i in range(len(cookie_keys)-1):
                                 cookie_data_str = '\n' + make_cookie_data({cookie_keys[i]:cookie_data[cookie_keys[i]]})
                                 resP = '''HTTP/1.1 200 OK
-Date: Wed, 28 Oct 2020 07:57:45 GMT
+Date: '''+gmt_time_str+'''
 Server: Apache/2.4.41 (Unix)
 Content-Location: index.html.ja
 Vary: negotiate'''+cookie_data_str+'''
@@ -299,6 +311,10 @@ Connection: Keep-Alive
 Content-Type: ''' + str(content_type) + '''; charset=UTF-8
 Cache-Control: no-store, no-cache, must-revalidate, max-age=0
 Access-Control-Allow-Origin: *
+Access-Control-Allow-Headers: *
+Access-Control-Allow-http: *
+Access-Control-Allow-Mathod: *
+Access-Control-Allow-Credentials: true
 '''
                                 cookie_data_str = ''
                                 response = resP.encode('utf_8')
@@ -309,7 +325,7 @@ Access-Control-Allow-Origin: *
                             print('CK_FLAG:0002')
                         print('CK_FLAG:0003')
                         resP = '''HTTP/1.1 200 OK
-Date: Wed, 28 Oct 2020 07:57:45 GMT
+Date: '''+gmt_time_str+'''
 Server: Apache/2.4.41 (Unix)
 Content-Location: index.html.ja
 Vary: negotiate'''+cookie_data_str+'''
@@ -323,6 +339,10 @@ Connection: Keep-Alive
 Content-Type: ''' + str(content_type) + '''; charset=UTF-8
 Cache-Control: no-store, no-cache, must-revalidate, max-age=0
 Access-Control-Allow-Origin: *
+Access-Control-Allow-Headers: *
+Access-Control-Allow-http: *
+Access-Control-Allow-Mathod: *
+Access-Control-Allow-Credentials: true
 '''
                         
                         
