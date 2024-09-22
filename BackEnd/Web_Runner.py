@@ -507,7 +507,7 @@ class Read_Data:
         print(post_dic)
 
         choice_answer = urllib.parse.unquote(path_split[2])
-        user_name = path_split[3]
+        user_name = urllib.parse.unquote(path_split[3])
 
         if self.answer == choice_answer:#post_dic['choice_answer']:
             self.ranking.append(user_name)#post_dic['user_name']
@@ -545,6 +545,7 @@ for i in server_list:
 @tree.command(name="ゲーム開始設定",description="スライドパズルゲームの開始時刻と終了時刻を設定します")
 @app_commands.choices(genre=[
     discord.app_commands.Choice(name="愛", value="愛"),
+    discord.app_commands.Choice(name="雑学", value="雑学"),
     discord.app_commands.Choice(name="地理", value="地理"),
     discord.app_commands.Choice(name="スポーツ", value="スポーツ"),
     discord.app_commands.Choice(name="理科", value="理科"),
@@ -560,9 +561,17 @@ for i in server_list:
     discord.app_commands.Choice(name="英語", value="英語"),
     discord.app_commands.Choice(name="健康", value="健康とフィットネス"),
     discord.app_commands.Choice(name="漫画", value="漫画"),
+    discord.app_commands.Choice(name="歴史", value="歴史"),
+    discord.app_commands.Choice(name="芸術", value="芸術"),
+    discord.app_commands.Choice(name="音楽", value="音楽"),
+    discord.app_commands.Choice(name="芸能人", value="芸能人"),
+    discord.app_commands.Choice(name="文学", value="文学"),
+    discord.app_commands.Choice(name="映画", value="映画"),
+    discord.app_commands.Choice(name="神話", value="神話"),
     discord.app_commands.Choice(name="アニメ", value="アニメ")
     ])
 @app_commands.choices(difficulty=[
+    discord.app_commands.Choice(name="神レベル", value="全知全能の人"),
     discord.app_commands.Choice(name="めちゃむずレベル", value="専門家"),
     discord.app_commands.Choice(name="高校生レベル", value="高校生"),
     discord.app_commands.Choice(name="小学生レベル", value="小学生")

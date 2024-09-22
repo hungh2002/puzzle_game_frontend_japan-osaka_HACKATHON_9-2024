@@ -1,2 +1,5 @@
 API_KEY.py
 Token.py
+letsencrypt_BOMU.key
+letsencrypt_Middle_BOMU.crt
+letsencrypt_SSL_BOMU.crt
