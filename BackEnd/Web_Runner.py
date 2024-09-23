@@ -544,6 +544,9 @@ for i in server_list:
 
 @tree.command(name="ゲーム開始設定",description="スライドパズルゲームの開始時刻と終了時刻を設定します")
 @app_commands.choices(genre=[
+    discord.app_commands.Choice(name="ビジネス", value="ビジネス"),
+    discord.app_commands.Choice(name="起業", value="起業"),
+    discord.app_commands.Choice(name="プログラミング", value="プログラミング"),
     discord.app_commands.Choice(name="愛", value="愛"),
     discord.app_commands.Choice(name="雑学", value="雑学"),
     discord.app_commands.Choice(name="地理", value="地理"),
@@ -554,17 +557,14 @@ for i in server_list:
     discord.app_commands.Choice(name="物理", value="物理"),
     discord.app_commands.Choice(name="生物学", value="生物学"),
     discord.app_commands.Choice(name="天文学", value="天文学"),
-    discord.app_commands.Choice(name="コンピューターサイエンス", value="コンピューターサイエンス"),
     discord.app_commands.Choice(name="テクノロジー", value="テクノロジー"),
     discord.app_commands.Choice(name="ゲーム", value="ゲーム"),
     discord.app_commands.Choice(name="料理", value="料理"),
     discord.app_commands.Choice(name="英語", value="英語"),
-    discord.app_commands.Choice(name="健康", value="健康とフィットネス"),
     discord.app_commands.Choice(name="漫画", value="漫画"),
     discord.app_commands.Choice(name="歴史", value="歴史"),
     discord.app_commands.Choice(name="芸術", value="芸術"),
     discord.app_commands.Choice(name="音楽", value="音楽"),
-    discord.app_commands.Choice(name="芸能人", value="芸能人"),
     discord.app_commands.Choice(name="文学", value="文学"),
     discord.app_commands.Choice(name="映画", value="映画"),
     discord.app_commands.Choice(name="神話", value="神話"),
@@ -573,6 +573,7 @@ for i in server_list:
 @app_commands.choices(difficulty=[
     discord.app_commands.Choice(name="神レベル", value="全知全能の人"),
     discord.app_commands.Choice(name="めちゃむずレベル", value="専門家"),
+    discord.app_commands.Choice(name="そこそこむずレベル", value="大学生"),
     discord.app_commands.Choice(name="高校生レベル", value="高校生"),
     discord.app_commands.Choice(name="小学生レベル", value="小学生")
     ])
