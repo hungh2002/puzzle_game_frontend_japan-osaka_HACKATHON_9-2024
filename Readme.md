@@ -1,3 +1,5 @@
+Running frontend: in Fronted folder ->  "npm run dev" or "npm run build && npm run preview"
+
 
 今回はこれをサーバーとフロントエンドとの通信用に使用→bomu.info:3000
 
